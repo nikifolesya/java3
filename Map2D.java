@@ -1,6 +1,6 @@
 /**
- * This class represents a simple two-dimensional map composed of square cells.
- * Each cell specifies the cost of traversing that cell.
+ * Этот класс представляет собой простую двумерную карту, состоящую из квадратных ячеек.
+ * В каждой ячейке указывается стоимость обхода этой ячейки.
  **/
 public class Map2D
 {
@@ -11,14 +11,14 @@ public class Map2D
     private int height;
 
     /**
-     * The actual map data that the pathfinding algorithm needs to navigate.
+     * Фактические данные карты, необходимые алгоритму поиска пути для навигации.
      **/
     private int[][] cells;
 
-    /** The starting location for performing the A* pathfinding. **/
+    /** Начальное местоположение для выполнения поиска пути A*. **/
     private Location start;
 
-    /** The ending location for performing the A* pathfinding. **/
+    /** Конечное местоположение для выполнения поиска пути A*. **/
     private Location finish;
 
 
@@ -44,9 +44,10 @@ public class Map2D
 
 
     /**
-     * This helper method checks the specified coordinates to see if they are
-     * within the map's boundaries.  If the coordinates are not within the map
-     * then the method throws an <code>IllegalArgumentException</code>.
+     * Этот вспомогательный метод проверяет указанные координаты, чтобы увидеть, находятся ли они
+     * в пределах границ карты. 
+     * Если координаты не указаны на карте, 
+     * метод выдает исключение <code>IllegalArgumentException</code>.
      **/
     private void checkCoords(int x, int y)
     {
@@ -76,8 +77,7 @@ public class Map2D
     }
     
     /**
-     * Returns true if the specified coordinates are contained within the map
-     * area.
+     * Возвращает значение true, если указанные координаты содержатся в пределах области карты.
      **/
     public boolean contains(int x, int y)
     {
@@ -85,13 +85,13 @@ public class Map2D
     }
     
     
-    /** Returns true if the location is contained within the map area. **/
+    /** Возвращает значение true, если местоположение содержится в области карты. **/
     public boolean contains(Location loc)
     {
         return contains(loc.xCoord, loc.yCoord);
     }
     
-    /** Returns the stored cost value for the specified cell. **/
+    /** Возвращает сохраненное значение стоимости для указанной ячейки. **/
     public int getCellValue(int x, int y)
     {
         checkCoords(x, y);
@@ -104,7 +104,7 @@ public class Map2D
         return getCellValue(loc.xCoord, loc.yCoord);
     }
     
-    /** Sets the cost value for the specified cell. **/
+    /** Задает значение стоимости для указанной ячейки. **/
     public void setCellValue(int x, int y, int value)
     {
         checkCoords(x, y);

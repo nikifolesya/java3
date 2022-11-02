@@ -1,19 +1,22 @@
+import java.util.HashMap;
+//import java.util.Map;
 /**
- * This class stores the basic state necessary for the A* algorithm to compute a
- * path across a map.  This state includes a collection of "open waypoints" and
- * another collection of "closed waypoints."  In addition, this class provides
- * the basic operations that the A* pathfinding algorithm needs to perform its
- * processing.
+ * Этот класс хранит базовое состояние, необходимое алгоритму A* для 
+ * вычисления пути по карте.  Это состояние включает в себя коллекцию 
+ * "открытых путевых точек" и другую коллекцию "закрытых путевых точек".  
+ * Кроме того, этот класс предоставляет основные операции, необходимые 
+ * алгоритму поиска пути A* для выполнения его обработки.
  **/
 public class AStarState
 {
-    /** This is a reference to the map that the A* algorithm is navigating. **/
+    /** Это ссылка на карту, по которой перемещается алгоритм A*. **/
     private Map2D map;
 
+    private HashMap<Location, Waypoint> openWaypoints = new HashMap<Location, Waypoint>(); //ключ-значение
+    private HashMap<Location, Waypoint> closeWaypoints = new HashMap<Location, Waypoint>();
 
-    /**
-     * Initialize a new state object for the A* pathfinding algorithm to use.
-     **/
+
+     /** Инициализировать новый объект состояния для использования алгоритмом поиска пути A*. **/
     public AStarState(Map2D map)
     {
         if (map == null)
@@ -28,57 +31,76 @@ public class AStarState
         return map;
     }
 
+
     /**
-     * This method scans through all open waypoints, and returns the waypoint
-     * with the minimum total cost.  If there are no open waypoints, this method
-     * returns <code>null</code>.
+     * Этот метод проверяет все вершины в наборе открытых вершин, 
+     * и после этого возваращет ссылку на вершину с наименьшей
+     * общей стоимостью. Если открытых путевых точек нет, этот метод возвращает null.
      **/
-    public Waypoint getMinOpenWaypoint()
-    {
-        // TODO:  Implement.
-        return null;
+    public Waypoint getMinOpenWaypoint() {
+        Waypoint minWaypoint = null;
+        Waypoint temp = null;
+        float minCost = Float.MAX_VALUE; // Лучшая цена по умолчанию устанавливается максимальное значение
+        //Находим минимальную цену пути, проходим по открытым точкам
+        for (int i = 0; i < openWaypoints.size(); i++) {
+            temp = (Waypoint) openWaypoints.values().toArray()[i];
+            if (temp.getTotalCost() < minCost) {
+                minCost = temp.getTotalCost();
+                minWaypoint = temp;
+            }
+        }
+        return minWaypoint;
     }
 
     /**
-     * This method adds a waypoint to (or potentially updates a waypoint already
-     * in) the "open waypoints" collection.  If there is not already an open
-     * waypoint at the new waypoint's location then the new waypoint is simply
-     * added to the collection.  However, if there is already a waypoint at the
-     * new waypoint's location, the new waypoint replaces the old one <em>only
-     * if</em> the new waypoint's "previous cost" value is less than the current
-     * waypoint's "previous cost" value.
+     * Этот метод добавляет указанную вершину только в том случае, 
+     * если существующая вершина хуже новой.
+     * Если в наборе "открытых вершин" нет вершины для данной локации, 
+     * то необходимо просто добавить новую вершину.
+     * Если в наборе "открытых вершин" уже есть вершина для этой 
+     * локации, новая вершина добавляется только, если стоимость пути 
+     * до новой вершины меньше стоимости пути до текущей.
+     * Если путь через новую вершину короче, чем путь через текущую, 
+     * замените текущую вершину на новую.
      **/
-    public boolean addOpenWaypoint(Waypoint newWP)
-    {
-        // TODO:  Implement.
+    public boolean addOpenWaypoint(Waypoint newWP) {
+        //Поиск точки в открытых точках.
+        Waypoint newPoint = openWaypoints.get(newWP.getLocation());
+        //Если не найдена, то добавляем, или, если стоимость новой вершины меньше, то заменяем ее в списке открытых вершин
+        if (newPoint == null || newPoint.getPreviousCost() > newWP.getPreviousCost()) {
+            openWaypoints.put(newWP.getLocation(),newWP);
+            return true;
+        }
         return false;
     }
 
-
-    /** Returns the current number of open waypoints. **/
-    public int numOpenWaypoints()
-    {
-        // TODO:  Implement.
-        return 0;
-    }
-
-
-    /**
-     * This method moves the waypoint at the specified location from the
-     * open list to the closed list.
-     **/
-    public void closeWaypoint(Location loc)
-    {
-        // TODO:  Implement.
+    /** Возвращает текущее количество открытых путевых точек. **/
+    public int numOpenWaypoints() {
+        return openWaypoints.size();
     }
 
     /**
-     * Returns true if the collection of closed waypoints contains a waypoint
-     * for the specified location.
+     * Этот метод перемещает вершину из набора "открытых вершин" 
+     * в набор "закрытых вершин". Принимает местоположение вершины.
      **/
-    public boolean isLocationClosed(Location loc)
-    {
-        // TODO:  Implement.
-        return false;
+    public void closeWaypoint(Location loc) {
+        //Если не можем пройти через вершин, добавляем её в список закрытых вершин
+        //Получаем вершину из открытых по хэшу локейшн
+        Waypoint isPoint = openWaypoints.get(loc);
+        //Если вершины нет в открытых, то ничего не делаем
+        if (isPoint == null) return;
+        //Удаляем вершину из открытых
+        openWaypoints.remove(loc);
+        //Добавляем вершину в закрытые
+        closeWaypoints.put(loc,isPoint);
     }
+
+    /**
+     * Возвращает значение true, если указанное местоположение 
+     * встречается в наборе закрытых вершин, иначе false .
+     **/
+    public boolean isLocationClosed(Location loc) {
+        return closeWaypoints.get(loc) != null;
+    }
+
 }

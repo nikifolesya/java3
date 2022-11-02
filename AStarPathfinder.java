@@ -1,29 +1,29 @@
-import java.util.HashMap;
-import java.util.HashSet;
+//import java.util.HashMap;
+//import java.util.HashSet;
 
 
 /**
- * This class contains the implementation of the A* pathfinding algorithm.  The
- * algorithm is implemented as a static method, since the pathfinding algorithm
- * really doesn't need to maintain any state between invocations of the
- * algorithm.
+ * Этот класс содержит реализацию алгоритма поиска пути A*.  
+ * Алгоритм реализован как статический метод, поскольку 
+ * алгоритму поиска пути действительно не нужно поддерживать какое-либо 
+ * состояние между вызовами алгоритма.
  */
 public class AStarPathfinder
 {
     /**
-     * This constant holds a maximum cutoff limit for the cost of paths.  If a
-     * particular waypoint happens to exceed this cost limit, the waypoint is
-     * discarded.
+     * Эта константа содержит максимальный предел отсечения для стоимости 
+     * путей.  Если конкретная путевая точка превышает этот лимит затрат, 
+     * путевая точка отбрасывается.
      **/
     public static final float COST_LIMIT = 1e6f;
 
     
     /**
-     * Attempts to compute a path that navigates between the start and end
-     * locations of the specified map.  If a path can be found, the waypoint of
-     * the <em>final</em> step in the path is returned; that waypoint can be
-     * used to walk backwards to the starting point.  If no path can be found,
-     * <code>null</code> is returned.
+     * Пытается вычислить путь, который перемещается между начальным и 
+     * конечным местоположениями указанной карты.  Если путь может быть 
+     * найден, возвращается путевая точка последнего шага пути; эта путевая 
+     * точка может быть использована для обратного перехода к начальной 
+     * точке.  Если путь не может быть найден, возвращается <код>null</code>.
      **/
     public static Waypoint computePath(Map2D map)
     {
@@ -31,7 +31,7 @@ public class AStarPathfinder
         AStarState state = new AStarState(map);
         Location finishLoc = map.getFinish();
 
-        // Set up a starting waypoint to kick off the A* search.
+        // Установите начальную путевую точку, чтобы начать поиск A*.
         Waypoint start = new Waypoint(map.getStart(), null);
         start.setCosts(0, estimateTravelCost(start.getLocation(), finishLoc));
         state.addOpenWaypoint(start);
@@ -51,12 +51,17 @@ public class AStarPathfinder
                 foundPath = true;
             }
             
-            // Add/update all neighbors of the current best location.  This is
-            // equivalent to trying all "next steps" from this location.
+            /** 
+             * Добавьте / обновите всех соседей текущего наилучшего 
+             * местоположения. Это эквивалентно попытке выполнить все 
+             * "следующие шаги" из этого местоположения.
+             **/
             takeNextStep(best, state);
             
-            // Finally, move this location from the "open" list to the "closed"
-            // list.
+            /** 
+             * Наконец, переместите это местоположение из списка "открыто" 
+             * в список "закрыто".
+             **/
             state.closeWaypoint(best.getLocation());
         }
         
@@ -64,9 +69,10 @@ public class AStarPathfinder
     }
 
     /**
-     * This static helper method takes a waypoint, and generates all valid "next
-     * steps" from that waypoint.  The new waypoints are added to the "open
-     * waypoints" collection of the passed-in A* state object.
+     * Этот статический вспомогательный метод принимает путевую точку и 
+     * генерирует все допустимые "следующие шаги" из этой путевой точки.  
+     * Новые путевые точки добавляются в коллекцию "открытые путевые точки" 
+     * переданного объекта A* state.
      **/
     private static void takeNextStep(Waypoint currWP, AStarState state)
     {
@@ -96,9 +102,12 @@ public class AStarPathfinder
                 
                 Waypoint nextWP = new Waypoint(nextLoc, currWP);
                 
-                // OK, we cheat and use the cost estimate to compute the actual
-                // cost from the previous cell.  Then, we add in the cost from
-                // the map cell we step onto, to incorporate barriers etc.
+                /**
+                 * Хорошо, мы обманываем и используем смету затрат для 
+                 * вычисления фактической стоимости из предыдущей ячейки.  
+                 * Затем мы добавляем стоимость из ячейки карты, на которую 
+                 * мы наступаем, чтобы включить барьеры и т.д.
+                 **/
 
                 float prevCost = currWP.getPreviousCost() +
                     estimateTravelCost(currWP.getLocation(),
@@ -113,19 +122,21 @@ public class AStarPathfinder
                 nextWP.setCosts(prevCost,
                     estimateTravelCost(nextLoc, map.getFinish()));
 
-                // Add the waypoint to the set of open waypoints.  If there
-                // happens to already be a waypoint for this location, the new
-                // waypoint only replaces the old waypoint if it is less costly
-                // than the old one.
+                /**
+                 * Добавьте путевую точку в набор открытых путевых точек.  
+                 * Если для этого местоположения уже существует путевая точка, 
+                 * новая путевая точка заменяет старую путевую точку только 
+                 * в том случае, если она дешевле старой.
+                 **/
                 state.addOpenWaypoint(nextWP);
             }
         }
     }
     
     /**
-     * Estimates the cost of traveling between the two specified locations.
-     * The actual cost computed is just the straight-line distance between the
-     * two locations.
+     * Оценивает стоимость проезда между двумя указанными точками. 
+     * Вычисленная фактическая стоимость - это просто расстояние по прямой 
+     * между двумя точками.
      **/
     private static float estimateTravelCost(Location currLoc, Location destLoc)
     {

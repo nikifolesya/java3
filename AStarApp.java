@@ -4,11 +4,12 @@ import javax.swing.*;
 
 
 /**
- * A simple Swing application to demonstrate the A* pathfinding algorithm.  The
- * user is presented with a map, containing a start and end location.  The user
- * can draw or clear obstacles on the map, and then press a button to compute a
- * path from start to end using the A* pathfinding algorithm.  If a path is
- * found, it is displayed in green.
+ * Простое приложение Swing для демонстрации алгоритма поиска пути A*.  
+ * Пользователю предоставляется карта, содержащая начальное и конечное 
+ * местоположение.  Пользователь может нарисовать или устранить препятствия 
+ * на карте, а затем нажать кнопку, чтобы вычислить путь от начала до конца, 
+ * используя алгоритм поиска пути A *.  Если путь найден, он отображается 
+ * зеленым цветом.
  **/
 public class AStarApp {
 
@@ -32,22 +33,22 @@ public class AStarApp {
 
     
     /**
-     * This inner class handles mouse events in the main grid of map cells, by
-     * modifying the cells based on the mouse button state and the initial edit
-     * that was performed.
+     * Этот внутренний класс обрабатывает события мыши в основной сетке 
+     * ячеек карты, изменяя ячейки на основе состояния кнопки мыши и 
+     * выполненного первоначального редактирования.
      **/
     private class MapCellHandler implements MouseListener
     {
         /**
-         * This value will be true if a mouse button has been pressed and we are
-         * currently in the midst of a modification operation.
+         * Это значение будет истинным, если была нажата кнопка мыши и 
+         * в данный момент мы находимся в процессе операции модификации.
          **/
         private boolean modifying;
         
         /**
-         * This value records whether we are making cells passable or
-         * impassable.  Which it is depends on the original state of the cell
-         * that the operation was started within.
+         * Это значение определяет, делаем ли мы ячейки проходимыми или 
+         * непроходимыми.  Что это такое, зависит от исходного состояния 
+         * ячейки, в которой была запущена операция.
          **/
         private boolean makePassable;
         
@@ -58,8 +59,10 @@ public class AStarApp {
             
             JMapCell cell = (JMapCell) e.getSource();
             
-            // If the current cell is passable then we are making them
-            // impassable; if it's impassable then we are making them passable.
+            /**
+             * Если текущая ячейка проходима, то мы делаем их непроходимыми; 
+             * если она непроходима, то мы делаем их проходимыми.
+             **/
             
             makePassable = !cell.isPassable();
             
@@ -190,12 +193,13 @@ public class AStarApp {
     
 
     /**
-     * This helper method attempts to compute a path using the current map
-     * state.  The implementation is rather slow; a new {@link Map2D} object is
-     * created, and initialized from the current application state.  Then the A*
-     * pathfinder is called, and if a path is found, the display is updated to
-     * show the path that was found.  (A better solution would use the Model
-     * View Controller design pattern.)
+     * Этот вспомогательный метод пытается вычислить путь, используя текущее 
+     * состояние карты.  Реализация довольно медленная; создается новый 
+     * объект {@link Map2D} и инициализируется из текущего состояния 
+     * приложения.  Затем вызывается навигатор A*, и если путь найден, 
+     * дисплей обновляется, чтобы показать путь, который был найден.  
+     * (Лучшим решением было бы использовать шаблон проектирования 
+     * контроллера представления модели.)
      **/
     private void findAndShowPath()
     {

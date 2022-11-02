@@ -1,6 +1,6 @@
 /**
- * This class represents a specific location in a 2D map.  Coordinates are
- * integer values.
+ * Этот класс представляет определенное местоположение на 2D-карте.  
+ * Координаты - это целочисленные значения.
  **/
 public class Location
 {
@@ -22,5 +22,24 @@ public class Location
     public Location()
     {
         this(0, 0);
+    }
+    
+    /**
+     * Проверяем является ли объект экземпляром класса Location (получаем ссылку на объект).
+     * Если является, сравниваем его координаты, иначе возвращаем false.
+     **/
+    public boolean equals(Object object) {
+        if (object instanceof Location) {
+            Location loc = (Location) object;
+            return (loc.xCoord == xCoord && loc.yCoord == yCoord);
+        }
+        return false;
+    }
+
+    /**
+     * Возвращаем хэш-код объекта по его координатам.
+     **/
+    public int hashCode() {
+        return 31 * xCoord + 9 * yCoord;
     }
 }
